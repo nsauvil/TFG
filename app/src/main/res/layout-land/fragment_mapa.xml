@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/map2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="60dp"
+        android:paddingBottom="40dp"
+        android:paddingStart="65dp"
+        android:paddingEnd="40dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/mapa_horizontal"
+        android:contentDescription="@string/mapa_1"/>
+
+    <ImageView
+        android:id="@+id/marca2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleX="2"
+        android:scaleY="2"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/baseline_location_on_24" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:contentDescription="@string/boton"
+        android:layout_marginBottom="39dp"
+        android:layout_marginEnd="43dp"
+        app:srcCompat="@drawable/baseline_keyboard_voice_24" />
+</FrameLayout>

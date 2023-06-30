@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/productosFragment"
+        android:icon = "@drawable/baseline_shopping_cart_24"
+        android:title="@string/productos_1" />
+    <item
+        android:id="@+id/mapaFragment"
+        android:icon = "@drawable/baseline_map_24"
+        android:title="@string/mapa_1" />
+    <item
+        android:id="@+id/ajustesFragment"
+        android:icon = "@drawable/baseline_settings_24"
+        android:title="@string/ajustes_1" />
+</menu>

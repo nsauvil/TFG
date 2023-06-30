@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name" translatable="false">TFG</string>
+    <string name="productos_1">Productos</string>
+    <string name="mapa_1">Mapa</string>
+    <string name="ajustes_1">Ajustes</string>
+    <string name="boton">Botón de voz</string>
+
+    <string name="productos_2">PRODUCTOS</string>
+    <string name="mapa_2">MAPA</string>
+    <string name="ajustes_2">AJUSTES</string>
+
+    <string name="search1">Localizar productos</string>
+    <string name="search2">¿Quieres localizar el producto seleccionado?</string>
+    <string name="search3">Aceptar</string>
+    <string name="search4">Cancelar</string>
+
+    <string name="bienvenida">Bienvenido a</string>
+
+    <string name="button">Buscar</string>
+
+</resources>

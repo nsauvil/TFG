@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/productosFragment">
+
+    <fragment
+        android:id="@+id/productosFragment"
+        android:name="nsauvil.tfg.ui.productos.ProductosFragment"
+        android:label="@string/productos_2" >
+        <action
+            android:id="@+id/action_productosFragment_to_mapaFragment"
+            app:destination="@id/mapaFragment"
+            app:popUpTo="@id/productosFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/mapaFragment"
+        android:name="nsauvil.tfg.ui.mapa.MapaFragment"
+        android:label="@string/mapa_2" />
+    <fragment
+        android:id="@+id/ajustesFragment"
+        android:name="nsauvil.tfg.ui.ajustes.AjustesFragment"
+        android:label="@string/ajustes_2" />
+    <dialog
+        android:id="@+id/selectDialogFragment"
+        android:name="nsauvil.tfg.ui.productos.SelectDialogFragment"
+        android:label="SelectDialogFragment" >
+    </dialog>
+
+</navigation>

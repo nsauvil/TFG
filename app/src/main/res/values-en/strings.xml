@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="productos_1">Products</string>
+    <string name="mapa_1">Map</string>
+    <string name="ajustes_1">Settings</string>
+    <string name="boton">Voice button</string>
+    <string name="productos_2">PRODUCTS</string>
+    <string name="mapa_2">MAP</string>
+    <string name="ajustes_2">SETTINGS</string>
+    <string name="search1">Search products</string>
+    <string name="search2">Do you want to search the selected product?</string>
+    <string name="search3">Yes</string>
+    <string name="search4">No</string>
+
+    <string name="bienvenida">Welcome to</string>
+    <string name="button">Search</string>
+</resources>
