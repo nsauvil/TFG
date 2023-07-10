@@ -7,186 +7,183 @@ import android.media.AudioRecord
 import android.media.MediaRecorder
 import android.os.Bundle
 import android.os.Environment
-import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
-import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.Toast
-import androidx.annotation.RequiresPermission
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import coil.Coil
+import coil.request.ImageRequest
+import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-
+import com.squareup.picasso.Picasso
 import nsauvil.tfg.R
 import nsauvil.tfg.databinding.FragmentMapaBinding
 import nsauvil.tfg.ui.domain.model.Producto
 import nsauvil.tfg.ui.productos.ProductosViewModel
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import kotlin.math.roundToInt
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.*
 
-private const val SAMPLE_RATE = 44100
-private const val CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO
-private const val AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT
-private val RECORDING_DURATION = 3000L // Duración de grabación en milisegundos (5 segundos)
+private const val SAMPLE_RATE = 44100  //frecuencia de muestreo para la grabación (muestras por segundo)
+private const val CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO //configuración del canal de audio
+private const val AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT //formato de codificación audio
 
 class MapaFragment: Fragment(R.layout.fragment_mapa){
     private var _binding : FragmentMapaBinding? = null //mantiene la referencia al binding y se inicializa a null
     private val binding get() = _binding!!  //da acceso a la referencia anterior
-    private val viewModel: ProductosViewModel by activityViewModels()
-    private lateinit var recordButton: FloatingActionButton
+    private val viewModel: ProductosViewModel by activityViewModels() //obtiene el ViewModel de los productos
+    private val viewModel2: MapaViewModel by activityViewModels()
+    private lateinit var recordButton: FloatingActionButton //botón de grabación
+    private var audioRecord: AudioRecord? = null  //almacena referencia a la instancia de grabación de audio
+    private var recordingThread: Thread? = null //almacena referencia al hilo responsable de la grabación de audio
+    private var isRecording = false  //indica si la grabación está en curso
+    private val RECORD_AUDIO_PERMISSION = Manifest.permission.RECORD_AUDIO  //permiso grabar audio
+    private val WRITE_EXTERNAL_STORAGE_PERMISSION = Manifest.permission.WRITE_EXTERNAL_STORAGE  //permiso escribir
+    private val PERMISSION_REQUEST_CODE = 200  //código de solicitud utilizado para solicitar permisos
+    private var outputAudioDir: String = "" // Ruta de salida para el archivo de audio grabado
+    private var outputStream: FileOutputStream?= null  //referencia al flujo de salida para el audio grabado
+    private var outputFile: File?= null //archivo de audio
 
-    private var audioRecord: AudioRecord? = null
-    private var recordingThread: Thread? = null
-    private var isRecording = false
-    private val RECORD_AUDIO_PERMISSION = Manifest.permission.RECORD_AUDIO
-    private val PERMISSION_REQUEST_CODE = 200
-    private var outputAudio: String = "" // Ruta de salida para el archivo de audio grabado
-    private var outputStream: FileOutputStream?= null
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {  //se ejecuta al crearse la vista del objeto
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMapaBinding.bind(view)
-        //viewModel.selectedProduct.observe(viewLifecycleOwner) {prod->
-            //moveImageToLocation(prod)
-        //}
+
+        viewModel2.imagenV.observe(viewLifecycleOwner) { //imagen escaneada con el QR
+            if (!it.isNullOrEmpty() && binding.map1 != null) {
+                val request = ImageRequest.Builder(requireContext())
+                    .data(it)
+                    .target(binding.map1!!)
+                    .build()
+                val disposable = Coil.imageLoader(requireContext()).enqueue(request)
+                binding.map1?.visibility = View.VISIBLE
+                binding.floatingActionButton.visibility = View.VISIBLE
+            }
+        }
+
+        viewModel2.imagenH.observe(viewLifecycleOwner) {
+            if (!it.isNullOrEmpty() && binding.map2 != null) {
+                val request = ImageRequest.Builder(requireContext())
+                    .data(it)
+                    .target(binding.map2!!)
+                    .build()
+                val disposable = Coil.imageLoader(requireContext()).enqueue(request)
+                binding.map2?.visibility = View.VISIBLE
+                binding.floatingActionButton.visibility = View.VISIBLE
+            }
+        }
+        /*
+        viewModel2.imagenV.observe(viewLifecycleOwner) { //imagen escaneada con el QR
+            if (!it.isNullOrEmpty() && binding.map1 != null) {
+                Picasso.get()
+                    .load(it)
+                    .into(binding.map1!!)
+                binding.map1?.visibility = View.VISIBLE
+                binding.floatingActionButton.visibility = View.VISIBLE
+            }
+        }
+        viewModel2.imagenH.observe(viewLifecycleOwner) {
+            if (!it.isNullOrEmpty() && binding.map2 != null) {
+                Picasso.get()
+                    .load(it)
+                    .into(binding.map2!!)
+                binding.map2?.visibility = View.VISIBLE
+                binding.floatingActionButton.visibility = View.VISIBLE
+            }
+        } */
+
         binding.map1?.viewTreeObserver?.addOnGlobalLayoutListener (object: ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {  //para asegurarnos de que la imagen no da null
+            override fun onGlobalLayout() {  //para asegurarnos de que la imagen no da null (viewTreeObserver)
                 viewModel.selectedProduct.observe(viewLifecycleOwner) { prod ->
-                    moveImageToLocation(prod)
+                    moveImageToLocation(prod)  //si cambia el objeto seleccionado, se localiza en el mapa
                 }
-                // Remueve el listener una vez que se ha obtenido el ancho
+                // Quita el listener
                 binding.map1?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
-
         })
         binding.map2?.viewTreeObserver?.addOnGlobalLayoutListener (object: ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {  //para asegurarnos de que la imagen no da null
                 viewModel.selectedProduct.observe(viewLifecycleOwner) { prod ->
-                    moveImageToLocation2(prod)
+                    moveImageToLocation2(prod)  //lo mismo que en el método anterior, pero para la pantalla horizontal
                 }
-                // Remueve el listener una vez que se ha obtenido el ancho
+                // Quita el listener
                 binding.map2?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
-
         })
-
-
         recordButton = view.findViewById(R.id.floatingActionButton)
         recordButton.setOnClickListener {
-            if (isRecording) {
-                stopRecording()
-            } else {
-                if (checkPermission()) {
-                    startRecording()
-                } else {
-                    requestPermission()
-                }
-            }
+            startRecording()  //si pulsas el botón de grabar, empieza la grabación
         }
+    }
 
-    }
-    private fun checkPermission(): Boolean {
-        val result = ContextCompat.checkSelfPermission(
-            requireContext(),
-            RECORD_AUDIO_PERMISSION
-        )
-        return result == PackageManager.PERMISSION_GRANTED
-    }
-    private fun requestPermission() {
-        ActivityCompat.requestPermissions(
-            requireActivity(),
-            arrayOf(RECORD_AUDIO_PERMISSION),
-            PERMISSION_REQUEST_CODE
-        )
-    }
     private fun startRecording() {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
-                Manifest.permission.RECORD_AUDIO
+                RECORD_AUDIO_PERMISSION
+            ) != PackageManager.PERMISSION_GRANTED||
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                WRITE_EXTERNAL_STORAGE_PERMISSION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // Solicitar el permiso RECORD_AUDIO si no está concedido
+            // Solicitar el permiso RECORD_AUDIO o el WRITE_EXTERNAL_STORAGE si no están concedidos
             ActivityCompat.requestPermissions(
                 requireActivity(),
-                arrayOf(Manifest.permission.RECORD_AUDIO),
+                arrayOf(RECORD_AUDIO_PERMISSION, WRITE_EXTERNAL_STORAGE_PERMISSION),
                 PERMISSION_REQUEST_CODE
             )
             return
         }
+
         try {
             val bufferSize = AudioRecord.getMinBufferSize(
                 SAMPLE_RATE,
                 CHANNEL_CONFIG,
                 AUDIO_FORMAT
             )
-            audioRecord =  AudioRecord(
+            audioRecord = AudioRecord(
                 MediaRecorder.AudioSource.MIC,
                 SAMPLE_RATE,
                 CHANNEL_CONFIG,
                 AUDIO_FORMAT,
                 bufferSize
             )
-
-            //val dir = requireContext().getExternalFilesDir(Environment.DIRECTORY_DCIM) //tarjeta al almacenamiento externo
-            val dir = File(Environment.getExternalStorageDirectory(), "Music")
-            dir.mkdirs()
-
-            //val outputFile = File(dir, "grabacion.wav")
-            // Verificar si el archivo ya existe y eliminarlo si es necesario
-            var counter = 0
-            var outputFile: File
-
-            do {
-                counter++
-                val fileName = "grabacion$counter.wav"
-                outputFile = File(dir, fileName)
-            } while (outputFile.exists())
-
-            outputAudio = outputFile.absolutePath
-
-            outputStream = FileOutputStream(outputFile)
+            val dir = File(Environment.getExternalStorageDirectory(), "Music")  //referencia al directorio
+            dir.mkdirs()  // crea la carpeta Music, por si no existe en el directorio de almacenamiento externo
+            outputFile = File(dir, "audio.raw")  //crea un objeto file que representa el archivo de salida de audio dentro de "Music"
+            outputAudioDir = outputFile!!.absolutePath //ruta absoluta archivo salida
+            outputStream = FileOutputStream(outputFile) //para escribir los datos de audio en el archivo
             val buffer = ByteArray(bufferSize)
 
             audioRecord?.startRecording()
-
             isRecording = true
-            recordButton.isEnabled = false
+            recordButton.isEnabled = false   //desactiva el botón para evitar que se interrumpa la grabación
             recordButton.isPressed = true
             requireActivity().runOnUiThread {
-                Toast.makeText(requireContext(), "Grabación iniciada", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Grabación iniciada", Toast.LENGTH_SHORT)
+                    .show()  //la interfaz mostrará este mensaje
             }
-            Log.d("iniciar","Grabación iniciada")
-
+            Log.d("iniciar", "Grabación iniciada")
             recordingThread = Thread {
                 val startTime = System.currentTimeMillis() // Tiempo de inicio de la grabación
-                while (isRecording && System.currentTimeMillis() - startTime < RECORDING_DURATION) {
+                while (isRecording && System.currentTimeMillis() - startTime < 3000L) { //se ejecuta mientas isRecording sea true, durante unos 3 segundos
                     val bytesRead = audioRecord?.read(buffer, 0, bufferSize)
-
                     if (bytesRead != null && bytesRead != AudioRecord.ERROR_INVALID_OPERATION) {
                         outputStream!!.write(buffer, 0, bytesRead)
                     }
                 }
-                //requireActivity().runOnUiThread {
-                    //Toast.makeText(requireContext(), "Grabando...", Toast.LENGTH_SHORT).show()
-                //}
-                //outputStream.close()
                 stopRecording()
             }
             recordingThread?.start()
-
-            // Actualizar la interfaz de usuario si es necesario
-            //updateUI()
         } catch (e: IOException) {
             e.printStackTrace()
         }
     }
-
     private fun stopRecording() {
         try {
             requireActivity().runOnUiThread {
@@ -194,30 +191,63 @@ class MapaFragment: Fragment(R.layout.fragment_mapa){
                 recordButton.isPressed = false
                 Toast.makeText(
                     requireContext(),
-                    "Grabación finalizada. Archivo: $outputAudio",
+                    "Grabación finalizada",
                     Toast.LENGTH_SHORT
                 ).show()
             }
-
             audioRecord?.stop()
             audioRecord?.release()
             isRecording = false
             recordingThread?.join()
-
             //cerrar el archivo de grabación
             outputStream?.close()
+            val listaProductosFile = File("C:\\Users\\noeli\\AndroidStudioProjects\\lista_productos.txt")
+            // Enviar el archivo de audio al servidor
+            sendAudioToServer(outputFile, listaProductosFile)
 
-            // Eliminar el archivo de grabación anterior
-            val previousRecording = File(outputAudio)
-            if (previousRecording.exists()) {
-                previousRecording.delete()
-            }
         } catch (e: InterruptedException) {
             e.printStackTrace()
         }
     }
 
+    private fun sendAudioToServer(audioFile: File?, listaProductosFile: File) {
+        val client = OkHttpClient()
+        // Crea una solicitud HTTP POST para enviar el archivo al servidor
+        val requestBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart(
+                "audio",
+                "audio.raw",
+                audioFile!!.asRequestBody("audio/raw".toMediaTypeOrNull()))
+            .addFormDataPart(
+                "lista_productos",
+                "lista_productos.txt",
+                listaProductosFile.asRequestBody("text/plain".toMediaTypeOrNull()))
+            .build()
 
+        val request = Request.Builder()
+            .url("http://91.242.153.52:631/Escritorio/iatros/audio_files/upload.php")  // dirección IP y puerto servidor
+            .post(requestBody)
+            .build()
+
+        // Envía la solicitud al servidor
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                // Error al enviar la solicitud
+                e.printStackTrace()
+            }
+            override fun onResponse(call: Call, response: Response) { //completar luego
+                if (response.isSuccessful) {
+                    //val responseBody = response.body?.string()
+                    // Eliminar el archivo de audio después de recibir la respuesta
+                    //audioFile.delete()
+                } else {
+                    // La solicitud no fue exitosa
+                    // Puedes manejar el caso de error aquí
+                }
+            }
+        })
+    }
 
     //para asegurarnos que independientemente del dispositivo, los productos se localizan bien
     private fun calculateCoordinatesV(prod:Producto): Pair<Float, Float> {
@@ -279,4 +309,6 @@ class MapaFragment: Fragment(R.layout.fragment_mapa){
         super.onDestroyView()
         _binding = null   //libera los recursos asociados al binding
     }
+
+
 }

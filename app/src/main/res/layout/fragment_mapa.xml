@@ -16,7 +16,8 @@
         android:paddingEnd="20dp"
         android:paddingBottom="30dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/mapa_vertical" />
+        android:visibility="invisible"
+        android:src="@drawable/baseline_image_not_supported_24" />
 
     <ImageView
         android:id="@+id/marca1"
@@ -33,7 +34,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:contentDescription="@string/boton"
-        android:layout_marginBottom="36dp"
+        android:layout_marginBottom="20dp"
         android:layout_marginEnd="12dp"
+        style = "@style/MyFloatingActionButtonStyle"
+        android:visibility="invisible"
         app:srcCompat="@drawable/baseline_keyboard_voice_24" />
 </FrameLayout>

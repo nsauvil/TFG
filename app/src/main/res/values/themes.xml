@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Theme.TFG" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimary">@color/green2</item>
+        <item name="colorPrimaryVariant">@color/green4</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
@@ -19,4 +19,27 @@
             @drawable/splash
         </item>
     </style>
+
+    <style name="Fondo" parent="Theme.TFG">
+        <item name="android:background">
+            @color/amarillo
+        </item>
+    </style>
+
+    <style name="MyBottomNavigationStyle" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="backgroundTint">@color/verdePastel</item>
+
+    </style>
+
+    <style name="MyFloatingActionButtonStyle" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="backgroundTint">@color/azul</item>
+        <item name="tint">@color/black</item>
+    </style>
+
+    <style name="MyCardViewStyle" parent="Widget.MaterialComponents.CardView">
+        <item name="strokeColor">@color/verdePastel</item>
+        <item name="cardBackgroundColor">@color/amarillo</item>
+    </style>
+
+
 </resources>

@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/productosFragment">
+    app:startDestination="@id/escaneoFragment">
 
     <fragment
         android:id="@+id/productosFragment"
@@ -27,5 +27,9 @@
         android:name="nsauvil.tfg.ui.productos.SelectDialogFragment"
         android:label="SelectDialogFragment" >
     </dialog>
+    <fragment
+        android:id="@+id/escaneoFragment"
+        android:name="nsauvil.tfg.ui.escaneo.EscaneoFragment"
+        android:label="@string/escaner" />
 
 </navigation>

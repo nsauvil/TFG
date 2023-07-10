@@ -2,16 +2,22 @@
 <resources>
     <string name="productos_1">Products</string>
     <string name="mapa_1">Map</string>
+    <string name="escaner">QR</string>
     <string name="ajustes_1">Settings</string>
     <string name="boton">Voice button</string>
     <string name="productos_2">PRODUCTS</string>
     <string name="mapa_2">MAP</string>
     <string name="ajustes_2">SETTINGS</string>
     <string name="search1">Search products</string>
-    <string name="search2">Do you want to search the selected product?</string>
+    <string name="search2">Do you want to search the product? \n (%1s)</string>
     <string name="search3">Yes</string>
     <string name="search4">No</string>
 
     <string name="bienvenida">Welcome to</string>
     <string name="button">Search</string>
+
+    <string name="buttonQR1">Scan QR</string>
+    <string name="buttonQR2">Scan other QR</string>
+    <string name="screen">Screen</string>
+    <string name="settings_mode">Night mode</string>
 </resources>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/green0"></item>
+    <item android:drawable="@color/green2"></item>
     <item>
         <bitmap android:src="@drawable/generatedtext"
             android:gravity="center">

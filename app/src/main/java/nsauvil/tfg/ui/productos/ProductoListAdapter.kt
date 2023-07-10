@@ -15,12 +15,10 @@ import nsauvil.tfg.ui.domain.model.Producto
 
 class ProductoListAdapter() : ListAdapter<Producto, ProductoListAdapter.viewHolder>(ProductoDiff){
 
-
     object ProductoDiff : DiffUtil.ItemCallback<Producto>() {
         override fun areItemsTheSame(oldItem: Producto, newItem: Producto): Boolean {
             return oldItem.id == newItem.id
         }
-
         override fun areContentsTheSame(oldItem: Producto, newItem: Producto): Boolean {
             return oldItem == newItem
         }
@@ -28,15 +26,10 @@ class ProductoListAdapter() : ListAdapter<Producto, ProductoListAdapter.viewHold
     class viewHolder(  //optimizar actualización info en las vistas del RecyclerView
         private val binding: ProductoItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-
         private val texto : TextView = itemView.findViewById<TextView>(R.id.alimento)
         private val button: MaterialButton = itemView.findViewById<MaterialButton>(R.id.button)
         fun bind (prod:Producto) {
             texto.text = prod.nom_producto
-            //button.setOnClickListener {
-                //val dialogFragment = SelectDialogFragment()
-                //dialogFragment.show(itemView.context as AppCompatActivity, "mi_dialog_fragment")
-            //}
             button.setOnClickListener {
                val dialogFragment = SelectDialogFragment()
                 val position = adapterPosition
@@ -44,7 +37,6 @@ class ProductoListAdapter() : ListAdapter<Producto, ProductoListAdapter.viewHold
                    // Pasar el producto al DialogFragment
                    dialogFragment.setSelectedProduct(prod)
                }
-
                // Mostrar el DialogFragment
                val fragmentManager = itemView.context as AppCompatActivity
                dialogFragment.show(fragmentManager.supportFragmentManager, "mi_dialog_fragment")
@@ -60,7 +52,6 @@ class ProductoListAdapter() : ListAdapter<Producto, ProductoListAdapter.viewHold
 
     override fun onBindViewHolder(holder: viewHolder, position: Int) {
         holder.bind(getItem(position))
-
     }
 
 }

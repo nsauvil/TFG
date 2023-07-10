@@ -16,7 +16,7 @@ open class SelectDialogFragment(): DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(activity)
         builder.setTitle(getString(R.string.search1))
-        builder.setMessage(getString(R.string.search2))
+        builder.setMessage(getString(R.string.search2, selectedProduct.nom_producto))
         builder.setPositiveButton(getString(R.string.search3)) { _, _ ->
             dismiss()
             viewModel.searchProducto(selectedProduct)

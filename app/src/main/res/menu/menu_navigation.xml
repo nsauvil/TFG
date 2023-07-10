@@ -10,8 +10,10 @@
         android:id="@+id/mapaFragment"
         android:icon = "@drawable/baseline_map_24"
         android:title="@string/mapa_1" />
-    <item
-        android:id="@+id/ajustesFragment"
+    <item android:id="@+id/escaneoFragment"
+        android:icon = "@drawable/baseline_qr_code_scanner_24"
+        android:title="@string/escaner" />
+    <item android:id="@+id/ajustesFragment"
         android:icon = "@drawable/baseline_settings_24"
         android:title="@string/ajustes_1" />
 </menu>
