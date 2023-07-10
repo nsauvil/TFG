@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "547822771950",
+    "firebase_url": "https://voicemarket-4faea-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "voicemarket-4faea",
+    "storage_bucket": "voicemarket-4faea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:547822771950:android:e8c30b139c151e24f3ddff",
+        "android_client_info": {
+          "package_name": "nsauvil.tfg"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGOXcQ4Td63ATr2W7oDyCSleXFtKqIaH0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
