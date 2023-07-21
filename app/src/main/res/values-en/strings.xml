@@ -20,4 +20,13 @@
     <string name="buttonQR2">Scan other QR</string>
     <string name="screen">Screen</string>
     <string name="settings_mode">Night mode</string>
+
+    <string name="audioMessage">Press once to start recording and repeat to stop</string>
+    <string name="AudioIni">Recording...</string>
+    <string name="AudioFin">Finished recording. Rute: %1s</string>
+    <string name="audioRecord">What product do you want to find?</string>
+
+    <string name="errorQR">Error: Null QR code</string>
+    <string name="errorProd">The product is not in the supermarket</string>
+
 </resources>

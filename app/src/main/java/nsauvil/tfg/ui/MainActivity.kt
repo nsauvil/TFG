@@ -15,8 +15,9 @@ import nsauvil.tfg.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private val db = FirebaseFirestore.getInstance() //instancia conectada a la base de datos. almacena los productos
-    private val storageRef = FirebaseStorage.getInstance().reference //storage de las listas y los planos
+    //private val db = FirebaseFirestore.getInstance() //instancia conectada a la base de datos. almacena los productos
+    //private val storageRef = FirebaseStorage.getInstance().reference //storage de las listas y los planos
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_TFG)
         super.onCreate(savedInstanceState)
@@ -29,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar) //establece la nueva barra creada como barra de acción
         appBarConfiguration = AppBarConfiguration (  //nueva instancia de AppBarConfiguration
             setOf(
-                R.id.productosFragment, R.id.mapaFragment, R.id.ajustesFragment
+                R.id.productosFragment, R.id.mapaFragment, R.id.escaneoFragment, R.id.ajustesFragment
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -42,18 +43,8 @@ class MainActivity : AppCompatActivity() {
             db.collection("mercadona").document("productos").collection("productos").add(producto)
         }*/
 
-        //PLANOS
-        //val planoV = Uri.fromFile(File("C:\\Users\\noeli\\AndroidStudioProjects\\mapa_vertical"))
-        //val planoH =Uri.fromFile(File("C:\\Users\\noeli\\AndroidStudioProjects\\mapa_horizontal"))
-        //val imagesRef = storageRef.child("mercadona/planos")
-        //imagesRef.child("plano_vertical").putFile(planoV)
-        //imagesRef.child("plano_horizontal").putFile(planoH)
-
-        //LISTA
-        //val lista = Uri.fromFile(File("C:\\Users\\noeli\\AndroidStudioProjects\\lista_productos"))
-        //val listaRef = storageRef.child("mercadona")
-        //listaRef.child("lista").putFile(lista)
     }
+    /*
     private fun getAllProducts(): List<Map<String, Any>> {  //generar todos los alimentos del supermercado
         val res = mutableListOf<Map<String, Any>>()
         res.add(hashMapOf("id" to "aceite", "nom_producto" to "Aceite", "cord1" to 0.3f,"cord2" to 0.7f, "cord11" to 0.35f,"cord22" to 0.3f))
@@ -103,6 +94,6 @@ class MainActivity : AppCompatActivity() {
         res.add(hashMapOf("id" to "zumo", "nom_producto" to "Zumo", "cord1" to 0.19f,"cord2" to 0.4f, "cord11" to 0.58f,"cord22" to 0.21f))
 
         return res
-    }
+    } */
 
 }

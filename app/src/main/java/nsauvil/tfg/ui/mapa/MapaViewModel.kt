@@ -13,11 +13,13 @@ class MapaViewModel: ViewModel() {
     val imagenH : LiveData<String>
         get() = _imagenH
 
+
     fun cambiarMapaV (imagen: String) {  //mapa vertical
         _imagenV.value = imagen
     }
 
-    fun cambiarMapaH (imagen: String) {  //mapa horizontal
+    fun cambiarMapaH (imagen: String) {  //mapa apaisado
         _imagenH.value = imagen
     }
+
 }

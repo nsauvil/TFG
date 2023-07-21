@@ -28,6 +28,13 @@
         android:visibility="invisible"
         app:srcCompat="@drawable/baseline_location_on_24" />
 
+    <TextView
+        android:id="@+id/comodin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"

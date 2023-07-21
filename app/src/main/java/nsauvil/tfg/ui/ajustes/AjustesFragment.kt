@@ -6,7 +6,7 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import nsauvil.tfg.R
 
-class AjustesFragment: PreferenceFragmentCompat(){
+class AjustesFragment: PreferenceFragmentCompat(){  //fragmento con el cambio al modo día y al modo noche
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences_settings, rootKey)
 

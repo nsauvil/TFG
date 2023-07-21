@@ -24,4 +24,13 @@
     <string name="screen">Pantalla</string>
     <string name="settings_mode">Modo noche</string>
 
+    <string name="audioMessage">Pulsa una vez para empezar a grabar y otra para que se detenga</string>
+    <string name="AudioIni">Grabando...</string>
+    <string name="AudioFin">Grabación finalizada. Ruta: %1s</string>
+
+    <string name="audioRecord">¿Qué producto quieres localizar?</string>
+
+    <string name="errorQR">Error: Código QR nulo</string>
+    <string name="errorProd">El producto no se encuentra en el supermercado</string>
+
 </resources>
