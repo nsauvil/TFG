@@ -21,6 +21,8 @@ import nsauvil.tfg.ui.productos.SelectDialogFragment2
 import okhttp3.*
 import java.io.*
 import java.text.Normalizer
+import java.util.*
+import kotlin.collections.ArrayList
 
 private const val RECOGNIZER_CODE = 1
 class MapaFragment: Fragment(R.layout.fragment_mapa){
@@ -35,6 +37,7 @@ class MapaFragment: Fragment(R.layout.fragment_mapa){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {  //se ejecuta al crearse la vista del objeto
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMapaBinding.bind(view)
+
 
         viewModel2.imagenV.observe(viewLifecycleOwner) { //imagen escaneada con el QR
             if (!it.isNullOrEmpty() && binding.map1 != null) {
@@ -81,8 +84,8 @@ class MapaFragment: Fragment(R.layout.fragment_mapa){
 
         recordButton = view.findViewById(R.id.floatingActionButton)
         recordButton.setOnClickListener{
-            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)  //la key y el valor
+            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH) //iniciar actividad reconocimiento de voz (muestra la pantalla y transcribe lo que dices)
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)  //el reconocimiento de voz es libre, no hay restricciones específicas
             intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.audioRecord))
             startActivityForResult(intent, RECOGNIZER_CODE)
         }
@@ -95,7 +98,13 @@ class MapaFragment: Fragment(R.layout.fragment_mapa){
             val pal = taskText.get(0)
             val pal1 = quitarTildes(pal)//para que coincida con el id
             val pal2 = pal1.lowercase()
-            val selectedProd = viewModel.productos.value?.find {it.id == pal2} //los id de los productos
+            val idioma = Locale.getDefault().language
+            var selectedProd : Producto ?= null
+            if (idioma == "en") {
+                selectedProd = viewModel.productosEn.value?.find {it.id == pal2}
+            } else {
+                selectedProd = viewModel.productosEs.value?.find {it.id == pal2}
+            }
             if (selectedProd != null) {
                 val dialogFragment = SelectDialogFragment2()
                 dialogFragment.setSelectedProduct(selectedProd)
@@ -108,7 +117,7 @@ class MapaFragment: Fragment(R.layout.fragment_mapa){
                     .show()
             }
         } else {
-            Toast.makeText(requireContext(), "datos null", Toast.LENGTH_SHORT)
+            Toast.makeText(requireContext(), getString(R.string.errorAudio), Toast.LENGTH_SHORT)
                 .show()
         }
     }

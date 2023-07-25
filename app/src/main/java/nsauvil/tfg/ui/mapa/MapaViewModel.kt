@@ -22,4 +22,5 @@ class MapaViewModel: ViewModel() {
         _imagenH.value = imagen
     }
 
+
 }

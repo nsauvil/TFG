@@ -31,6 +31,9 @@
     <string name="audioRecord">¿Qué producto quieres localizar?</string>
 
     <string name="errorQR">Error: Código QR nulo</string>
+    <string name="errorQR2">Error: Código QR no válido</string>
     <string name="errorProd">El producto no se encuentra en el supermercado</string>
+
+    <string name="errorAudio">No se detectó la voz</string>
 
 </resources>

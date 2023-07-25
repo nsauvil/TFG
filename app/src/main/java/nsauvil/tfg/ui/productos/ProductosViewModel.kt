@@ -8,9 +8,13 @@ import nsauvil.tfg.ui.domain.model.Producto
 class ProductosViewModel : ViewModel() {
 
 
-    private var _productos = MutableLiveData<List<Producto>>()  //los productos que se verán en la lista
-    val productos : LiveData<List<Producto>>
-        get() = _productos
+    private var _productosEs = MutableLiveData<List<Producto>>()  //los productos que se verán en la lista
+    val productosEs : LiveData<List<Producto>>
+        get() = _productosEs
+
+    private var _productosEn = MutableLiveData<List<Producto>>()  //los productos que se verán en la lista
+    val productosEn : LiveData<List<Producto>>
+        get() = _productosEn
 
     private val _selectedProduct = MutableLiveData<Producto>()  //el producto que se desea localizar
     val selectedProduct: LiveData<Producto>
@@ -21,7 +25,11 @@ class ProductosViewModel : ViewModel() {
     }
 
 
-    fun setProductos(nuevosProductos: List<Producto>) {//para que al escanear el QR se sustituyan los productos
-        _productos.value = nuevosProductos
+    fun setProductosEs(nuevosProductos: List<Producto>) {//para que al escanear el QR se sustituyan los productos
+        _productosEs.value = nuevosProductos
+    }
+
+    fun setProductosEn(nuevosProductos: List<Producto>) {//para que al escanear el QR se sustituyan los productos
+        _productosEn.value = nuevosProductos
     }
 }

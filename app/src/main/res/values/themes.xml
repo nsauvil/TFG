@@ -30,6 +30,10 @@
         <item name="backgroundTint">@color/verdePastel</item>
 
     </style>
+    <style name="Base.Widget.MaterialComponents.TextView" parent="Widget.MaterialComponents.CardView">
+        <item name="android:textColor">@color/black</item>
+
+    </style>
 
     <style name="MyFloatingActionButtonStyle" parent="Widget.MaterialComponents.FloatingActionButton">
         <item name="backgroundTint">@color/azul</item>
