@@ -26,11 +26,11 @@ import kotlin.collections.ArrayList
 
 private const val RECOGNIZER_CODE = 1
 class MapaFragment: Fragment(R.layout.fragment_mapa){
-    private var _binding : FragmentMapaBinding? = null //mantiene la referencia al binding y se inicializa a null
-    private val binding get() = _binding!!  //da acceso a la referencia anterior
-    private val viewModel: ProductosViewModel by activityViewModels() //obtiene el ViewModel de los productos
+    private var _binding : FragmentMapaBinding? = null //Mantiene la referencia al binding y se inicializa a null
+    private val binding get() = _binding!!  //Da acceso a la referencia anterior
+    private val viewModel: ProductosViewModel by activityViewModels() //Obtiene el ViewModel de los productos
     private val viewModel2: MapaViewModel by activityViewModels()
-    private lateinit var recordButton: FloatingActionButton //botón de grabación
+    private lateinit var recordButton: FloatingActionButton //Botón de grabación
 
 
 
@@ -39,19 +39,19 @@ class MapaFragment: Fragment(R.layout.fragment_mapa){
         _binding = FragmentMapaBinding.bind(view)
 
 
-        viewModel2.imagenV.observe(viewLifecycleOwner) { //imagen escaneada con el QR
+        viewModel2.imagenV.observe(viewLifecycleOwner) { //Imagen obtenida mediante el escaneo de QR (vertical)
             if (!it.isNullOrEmpty() && binding.map1 != null) {
                 val request = ImageRequest.Builder(requireContext())
                     .data(it)
                     .target(binding.map1!!)
                     .build()
-                val disposable = Coil.imageLoader(requireContext()).enqueue(request)
+                val disposable = Coil.imageLoader(requireContext()).enqueue(request) //En este caso, uso la biblioteca Coil para cargar las imágenes almacenadas en la base de datos
                 binding.map1?.visibility = View.VISIBLE
                 binding.floatingActionButton.visibility = View.VISIBLE
             }
         }
 
-        viewModel2.imagenH.observe(viewLifecycleOwner) {
+        viewModel2.imagenH.observe(viewLifecycleOwner) {//Imagen obtenida mediante el escaneo de QR (apaisada)
             if (!it.isNullOrEmpty() && binding.map2 != null) {
                 val request = ImageRequest.Builder(requireContext())
                     .data(it)
@@ -64,39 +64,39 @@ class MapaFragment: Fragment(R.layout.fragment_mapa){
         }
 
         binding.map1?.viewTreeObserver?.addOnGlobalLayoutListener (object: ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {  //para asegurarnos de que la imagen no da null (viewTreeObserver)
+            override fun onGlobalLayout() {  //Para asegurarnos de que la imagen no da null (viewTreeObserver)
                 viewModel.selectedProduct.observe(viewLifecycleOwner) { prod ->
-                    moveImageToLocation(prod)  //si cambia el objeto seleccionado, se localiza en el mapa
+                    moveImageToLocation(prod)  //Si cambia el objeto seleccionado, se localiza en el mapa
                 }
-                // Quita el listener
+                // Quitar el listener
                 binding.map1?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
         })
         binding.map2?.viewTreeObserver?.addOnGlobalLayoutListener (object: ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {  //para asegurarnos de que la imagen no da null
+            override fun onGlobalLayout() {  //Para asegurarnos de que la imagen no da null
                 viewModel.selectedProduct.observe(viewLifecycleOwner) { prod ->
-                    moveImageToLocation2(prod)  //lo mismo que en el método anterior, pero para la pantalla horizontal
+                    moveImageToLocation2(prod)  //Lo mismo que en el método anterior, pero para la pantalla apaisada
                 }
-                // Quita el listener
+                // Quitar el listener
                 binding.map2?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
         })
 
         recordButton = view.findViewById(R.id.floatingActionButton)
-        recordButton.setOnClickListener{
-            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH) //iniciar actividad reconocimiento de voz (muestra la pantalla y transcribe lo que dices)
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)  //el reconocimiento de voz es libre, no hay restricciones específicas
+        recordButton.setOnClickListener{//Para el reconocimiento de voz se emplea RecognizerIntent
+            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH) //Iniciar la actividad de reconocimiento de voz (muestra la pantalla y transcribe lo que dices)
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)  //El reconocimiento de voz es libre, no hay restricciones específicas
             intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.audioRecord))
             startActivityForResult(intent, RECOGNIZER_CODE)
         }
     }
 
     @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) { //Este método gestiona los resultados obtenidos con el audio
         if(requestCode == RECOGNIZER_CODE && resultCode == RESULT_OK && data != null) {
             val taskText: ArrayList<String> = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS) as ArrayList<String>
             val pal = taskText.get(0)
-            val pal1 = quitarTildes(pal)//para que coincida con el id
+            val pal1 = quitarTildes(pal)//Para que coincida con el id
             val pal2 = pal1.lowercase()
             val idioma = Locale.getDefault().language
             var selectedProd : Producto ?= null
@@ -128,8 +128,8 @@ class MapaFragment: Fragment(R.layout.fragment_mapa){
         return pattern.replace(normalizedText, "")
     }
 
-    //para asegurarnos que independientemente del dispositivo, los productos se localizan bien
-    private fun calculateCoordinatesV(prod:Producto): Pair<Float, Float> { //coordenadas orientación vertical
+    //Para asegurarnos de que, independientemente del dispositivo, los productos se localizan bien:
+    private fun calculateCoordinatesV(prod:Producto): Pair<Float, Float> { //Coordenadas orientación vertical
         binding.map1?.let { mapView ->
             if (mapView.width > 0 && mapView.height > 0) {
                 val mapWidth = mapView.width.toFloat()
@@ -145,7 +145,7 @@ class MapaFragment: Fragment(R.layout.fragment_mapa){
         }
         return Pair(prod.cord1, prod.cord2)
     }
-    private fun calculateCoordinatesH(prod:Producto): Pair<Float, Float> { //coordenadas orientación apaisada
+    private fun calculateCoordinatesH(prod:Producto): Pair<Float, Float> { //Coordenadas orientación apaisada
         binding.map2?.let { mapView ->
             if (mapView.width > 0 && mapView.height > 0) {
                 val mapWidth = mapView.width.toFloat()
@@ -163,8 +163,8 @@ class MapaFragment: Fragment(R.layout.fragment_mapa){
     }
     private fun moveImageToLocation(producto: Producto) {
         val coordenadasV = calculateCoordinatesV(producto)
-        binding.marca1?.let { marca1 ->  //orientación vertical mapa
-            marca1.translationX = 0.0f   //asegurarnos de que se coloca desde el comienzo
+        binding.marca1?.let { marca1 ->  //Orientación vertical mapa
+            marca1.translationX = 0.0f   //Para asegurarnos de que se coloca desde el comienzo
             marca1.translationY = 0.0f
             marca1.translationX = coordenadasV.first
             marca1.translationY = coordenadasV.second
@@ -173,7 +173,7 @@ class MapaFragment: Fragment(R.layout.fragment_mapa){
     }
     private fun moveImageToLocation2(producto: Producto) {
         val coordenadasH = calculateCoordinatesH(producto)
-        binding.marca2?.let { marca2 ->   //orientación apaisada mapa
+        binding.marca2?.let { marca2 ->   //Orientación apaisada mapa
             marca2.translationX = 0.0f
             marca2.translationY = 0.0f
             marca2.translationX = coordenadasH.first
@@ -184,7 +184,7 @@ class MapaFragment: Fragment(R.layout.fragment_mapa){
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null   //libera los recursos asociados al binding
+        _binding = null   //Libera los recursos asociados al binding
     }
 
 

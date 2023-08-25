@@ -10,6 +10,6 @@ class EscaneoViewModel : ViewModel() {
         get() = _buttonQRPressed
 
     fun pressScanButton() {
-        _buttonQRPressed.value = true //para saber si debe cambiar el mensaje del botón
+        _buttonQRPressed.value = true //Para saber si debe cambiar el mensaje del botón
     }
 }

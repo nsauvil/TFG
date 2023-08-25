@@ -14,11 +14,11 @@ class MapaViewModel: ViewModel() {
         get() = _imagenH
 
 
-    fun cambiarMapaV (imagen: String) {  //mapa vertical
+    fun cambiarMapaV (imagen: String) {  //Mapa vertical
         _imagenV.value = imagen
     }
 
-    fun cambiarMapaH (imagen: String) {  //mapa apaisado
+    fun cambiarMapaH (imagen: String) {  //Mapa apaisado
         _imagenH.value = imagen
     }
 

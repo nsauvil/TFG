@@ -6,9 +6,10 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import nsauvil.tfg.R
 
-class AjustesFragment: PreferenceFragmentCompat(){  //fragmento con el cambio al modo día y al modo noche
+//Fragmento con el cambio al modo día y al modo noche
+class AjustesFragment: PreferenceFragmentCompat(){
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.preferences_settings, rootKey)
+        setPreferencesFromResource(R.xml.preferences_settings, rootKey) //Asigna el fragmento XML de preferencias "preferences_settings"
 
         val switchPreference = findPreference<SwitchPreference>("night_mode")
         switchPreference?.setOnPreferenceChangeListener { _, newValue ->

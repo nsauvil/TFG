@@ -9,8 +9,8 @@ import nsauvil.tfg.databinding.FragmentProductosBinding
 import java.util.*
 
 class ProductosFragment: Fragment(R.layout.fragment_productos){
-    private var _binding : FragmentProductosBinding? = null //mantiene la referencia al binding y se inicializa a null
-    private val binding get() = _binding!!  //da acceso a la referencia anterior
+    private var _binding : FragmentProductosBinding? = null //Mantiene la referencia al binding y se inicializa a null
+    private val binding get() = _binding!!  //Da acceso a la referencia anterior
     private val viewModel: ProductosViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -19,20 +19,20 @@ class ProductosFragment: Fragment(R.layout.fragment_productos){
         val adapter = ProductoListAdapter()
         binding.recyclerView.adapter = adapter
 
-        val idioma = Locale.getDefault().language
+        val idioma = Locale.getDefault().language //Muestra los productos en función del idioma predeterminado del dispositivo
         val prodMostrar = if (idioma == "en") {
             viewModel.productosEn
         } else {
             viewModel.productosEs
         }
-        prodMostrar.observe(viewLifecycleOwner) {al->  //cualquiera de los dos (en/es) vale
+        prodMostrar.observe(viewLifecycleOwner) {al->  //Cualquiera de los dos (en/es) vale
             adapter.submitList(al)
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null   //libera los recursos asociados al binding
+        _binding = null   //Libera los recursos asociados al binding
     }
 
 

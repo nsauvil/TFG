@@ -10,7 +10,7 @@ import nsauvil.tfg.ui.domain.model.Producto
 
 open class SelectDialogFragment2(): DialogFragment() {
     private val viewModel: ProductosViewModel by activityViewModels()
-    private lateinit var selectedProduct: Producto //almacena el producto que se quiere buscar
+    private lateinit var selectedProduct: Producto //Almacena el producto que se quiere buscar
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(activity)

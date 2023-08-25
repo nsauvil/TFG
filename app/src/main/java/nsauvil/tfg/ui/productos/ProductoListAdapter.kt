@@ -23,7 +23,7 @@ class ProductoListAdapter() : ListAdapter<Producto, ProductoListAdapter.viewHold
             return oldItem == newItem
         }
     }
-    class viewHolder(  //optimizar actualización info en las vistas del RecyclerView
+    class viewHolder(  //Optimizar actualización info en las vistas del RecyclerView
         private val binding: ProductoItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         private val texto : TextView = itemView.findViewById<TextView>(R.id.alimento)

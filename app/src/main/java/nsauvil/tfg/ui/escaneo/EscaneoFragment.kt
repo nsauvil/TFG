@@ -19,8 +19,8 @@ import java.util.*
 
 
 class EscaneoFragment: Fragment(R.layout.fragment_escaneo) {
-    private var _binding : FragmentEscaneoBinding? = null //mantiene la referencia al binding y se inicializa a null
-    private val binding get() = _binding!!  //da acceso a la referencia anterior
+    private var _binding : FragmentEscaneoBinding? = null //Mantiene la referencia al binding y se inicializa a null
+    private val binding get() = _binding!!  //Da acceso a la referencia anterior
     private val viewModel: ProductosViewModel by activityViewModels()
     private val viewModel2: EscaneoViewModel by activityViewModels()
     private val viewModel3: MapaViewModel by activityViewModels()
@@ -31,46 +31,46 @@ class EscaneoFragment: Fragment(R.layout.fragment_escaneo) {
         _binding = FragmentEscaneoBinding.bind(view)
 
         binding.buttonQR.setOnClickListener {
-            startQRScanner()  //al pulsar el botón, llama a la cámara
+            startQRScanner()  //Al pulsar el botón, llama a la cámara
         }
 
         viewModel2.buttonQRPressed.observe(viewLifecycleOwner) {
             if (viewModel2.buttonQRPressed.value == true) {
-                binding.buttonQR.text = getString(R.string.buttonQR2) //cambia el texto del botón al pulsarlo una vez
+                binding.buttonQR.text = getString(R.string.buttonQR2) //Cambia el texto del botón al pulsarlo una vez
             } else {
                 binding.buttonQR.text = getString(R.string.buttonQR1)
             }
         }
     }
-
+    //Para activar la cámara, recurro a la biblioteca ZXing
     private fun startQRScanner() {
         val integrator = IntentIntegrator.forSupportFragment(this)
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
         integrator.setPrompt( getString(R.string.buttonQR1))
-        integrator.setCameraId(0) // Usar la cámara trasera del dispositivo
+        integrator.setCameraId(0) // Usa la cámara trasera del dispositivo
         integrator.setBeepEnabled(false) // Desactiva el sonido de escaneo
         integrator.initiateScan()
     }
 
     @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) { //Con este método se maneja el resultado obtenido con el QR
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-        viewModel2.pressScanButton() //cambiar el mensaje del botón
+        viewModel2.pressScanButton() //Cambiar el mensaje del botón
         if (result != null && result.contents != null) {
             val qrCodeResult = result.contents
             val firestore = FirebaseFirestore.getInstance()
             //Primero, recuperar los productos
-            val colRef = firestore.collection(qrCodeResult)  // el QR contiene el nombre del supermercado
+            val colRef = firestore.collection(qrCodeResult)  // El QR contiene el nombre del supermercado
             colRef.get().addOnSuccessListener {
                 val colRef2Es = colRef.document("es").collection("productos")
                 val colRef2En = colRef.document("en").collection("productos")
                 colRef2Es.get().addOnSuccessListener { querySnapshot ->
                     val productosList = mutableListOf<Producto>()
                     for (document in querySnapshot.documents) {
-                        val producto = document.toObject(Producto::class.java) //convertir los datos en Firebase en Productos
+                        val producto = document.toObject(Producto::class.java) //Convertir los datos de Firebase en Productos
                         producto?.let { productosList.add(it) }
                     }
-                    val productosListOrd = productosList.sortedBy { it.nom_producto } //ordenar alfabéticamente los productos, para facilitar su búsqueda
+                    val productosListOrd = productosList.sortedBy { it.nom_producto } //Ordenar alfabéticamente los productos, para facilitar su búsqueda
                     viewModel.setProductosEs(productosListOrd)
                 }.addOnFailureListener { exception ->
                     Toast.makeText(requireContext(), getString(R.string.errorQR2), Toast.LENGTH_SHORT).show()
@@ -79,10 +79,10 @@ class EscaneoFragment: Fragment(R.layout.fragment_escaneo) {
                 colRef2En.get().addOnSuccessListener { querySnapshot ->
                     val productosList = mutableListOf<Producto>()
                     for (document in querySnapshot.documents) {
-                        val producto = document.toObject(Producto::class.java) //convertir los datos en Firebase en Productos
+                        val producto = document.toObject(Producto::class.java) //Convertir los datos de Firebase en Productos
                         producto?.let { productosList.add(it) }
                     }
-                    val productosListOrd = productosList.sortedBy { it.nom_producto } //ordenar alfabéticamente los productos, para facilitar su búsqueda
+                    val productosListOrd = productosList.sortedBy { it.nom_producto } //Ordenar alfabéticamente los productos, para facilitar su búsqueda
                     viewModel.setProductosEn(productosListOrd)
                 }.addOnFailureListener { exception ->
                     Toast.makeText(requireContext(), getString(R.string.errorQR2), Toast.LENGTH_SHORT).show()
@@ -92,14 +92,14 @@ class EscaneoFragment: Fragment(R.layout.fragment_escaneo) {
                 Toast.makeText(requireContext(), getString(R.string.errorQR2), Toast.LENGTH_SHORT).show()
                 exception.printStackTrace()
             }
-            //ahora los mapas. Los ponemos aquí para evitar excepciones al acceder a Storage
+            //Ahora los mapas. Los ponemos aquí para evitar excepciones al acceder a Storage
             val storageRef = FirebaseStorage.getInstance().reference
             val refMap1 = storageRef.child("$qrCodeResult/planos/mapa_vertical.png")
             val refMap2 = storageRef.child("$qrCodeResult/planos/mapa_horizontal.png")
             // Obtener las URLs de descarga de las imágenes
             refMap1.downloadUrl.addOnSuccessListener { uri ->
                 val urlPlano1 = uri.toString()
-                // cargar la imagen en un ImageView
+                // Cargar la imagen en un ImageView
                 viewModel3.cambiarMapaV(urlPlano1)
             }.addOnFailureListener { exception ->
                 Toast.makeText(requireContext(), getString(R.string.errorQR2), Toast.LENGTH_SHORT).show()
@@ -107,7 +107,7 @@ class EscaneoFragment: Fragment(R.layout.fragment_escaneo) {
             }
             refMap2.downloadUrl.addOnSuccessListener { uri2 ->
                 val urlPlano2 = uri2.toString()
-                // cargar la imagen en un ImageView
+                // Cargar la imagen en un ImageView
                 viewModel3.cambiarMapaH(urlPlano2)
             }.addOnFailureListener { exception ->
                 Toast.makeText(requireContext(), getString(R.string.errorQR2), Toast.LENGTH_SHORT).show()
@@ -121,7 +121,7 @@ class EscaneoFragment: Fragment(R.layout.fragment_escaneo) {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null   //libera los recursos asociados al binding
+        _binding = null   //Libera los recursos asociados al binding
     }
 
 
